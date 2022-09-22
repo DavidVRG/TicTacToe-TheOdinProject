@@ -1,15 +1,9 @@
 /* VARIABLES DECLATARION */
 const game = document.querySelector('.game');
 const cube = document.querySelectorAll('.cube');
-const cube1 = document.querySelector('.cube-1');
-const cube2 = document.querySelector('.cube-2');
-const cube3 = document.querySelector('.cube-3');
-const cube4 = document.querySelector('.cube-4');
-const cube5 = document.querySelector('.cube-5');
-const cube6 = document.querySelector('.cube-6');
-const cube7 = document.querySelector('.cube-7');
-const cube8 = document.querySelector('.cube-8');
-const cube9 = document.querySelector('.cube-9');
+
+let playerResult = [];
+let computerResult = [];
 
 /* GAME */
 cube.forEach(e => {
@@ -17,16 +11,17 @@ cube.forEach(e => {
         if(e.getAttribute('dataset') == '' && e.getAttribute('dataset') != 'O' && e.getAttribute('dataset') != 'X'){
             e.setAttribute('dataset','O');
             e.innerHTML = 'O';
+            playerResult.push(Number(e.getAttribute('data-number')))
         }
 
         for(i = getRandom(1,9); i<=cube.length; i++){
             if(document.querySelector(`.cube-${i}`).getAttribute('dataset') == '' && document.querySelector(`.cube-${i}`).getAttribute('dataset') != 'O' && document.querySelector(`.cube-${i}`).getAttribute('dataset') != 'X'){
                 document.querySelector(`.cube-${i}`).innerHTML = 'X';
                 document.querySelector(`.cube-${i}`).setAttribute('dataset','X');
+                computerResult.push(i)
                 break;
             }
         }
-
        gameLogic()
     })
 })
@@ -37,75 +32,49 @@ function getRandom(min, max) {
 }
 
 
+/* WIN SITUATIONS */
+const winSituations = [
+    [1,2,3],
+    [4,5,6],
+    [7,8,9],
+    [1,4,7],
+    [2,5,8],
+    [3,6,9],
+    [1,5,9],
+    [3,5,7]
+]
+
 /* GAME LOGIC */
 function gameLogic(){
-    if(
-        cube1.getAttribute('dataset') == 'O' &&
-        cube2.getAttribute('dataset') == 'O' &&
-        cube3.getAttribute('dataset') == 'O' ||
-        cube4.getAttribute('dataset') == 'O' &&
-        cube5.getAttribute('dataset') == 'O' &&
-        cube6.getAttribute('dataset') == 'O' ||
-        cube7.getAttribute('dataset') == 'O' &&
-        cube8.getAttribute('dataset') == 'O' &&
-        cube9.getAttribute('dataset') == 'O' ||
+    let sortedPlayerResult = playerResult.sort();
+    let sortedComputerResult = computerResult.sort();
 
-        cube1.getAttribute('dataset') == 'O' &&
-        cube4.getAttribute('dataset') == 'O' &&
-        cube7.getAttribute('dataset') == 'O' ||
-        cube2.getAttribute('dataset') == 'O' &&
-        cube5.getAttribute('dataset') == 'O' &&
-        cube8.getAttribute('dataset') == 'O' ||
-        cube3.getAttribute('dataset') == 'O' &&
-        cube6.getAttribute('dataset') == 'O' &&
-        cube9.getAttribute('dataset') == 'O' ||
+    winSituations.forEach(e => {
 
-        cube1.getAttribute('dataset') == 'O' &&
-        cube5.getAttribute('dataset') == 'O' &&
-        cube9.getAttribute('dataset') == 'O' ||
-
-        cube3.getAttribute('dataset') == 'O' &&
-        cube5.getAttribute('dataset') == 'O' &&
-        cube7.getAttribute('dataset') == 'O'
+        if(JSON.stringify(sortedPlayerResult).includes(JSON.stringify(e[0])) &&
+        JSON.stringify(sortedPlayerResult).includes(JSON.stringify(e[1])) &&
+        JSON.stringify(sortedPlayerResult).includes(JSON.stringify(e[2]))
         ){
-        alert('Player is winner')
-        cube.forEach(e => {
-            e.innerHTML = '';
-            e.setAttribute('dataset', '')
-        })
-    }else if(
-        cube1.getAttribute('dataset') == 'X' &&
-        cube2.getAttribute('dataset') == 'X' &&
-        cube3.getAttribute('dataset') == 'X' ||
-        cube4.getAttribute('dataset') == 'X' &&
-        cube5.getAttribute('dataset') == 'X' &&
-        cube6.getAttribute('dataset') == 'X' ||
-        cube7.getAttribute('dataset') == 'X' &&
-        cube8.getAttribute('dataset') == 'X' &&
-        cube9.getAttribute('dataset') == 'X' ||
+            alert('Player win!')
+            reset()
+        }
+        
+        else if(JSON.stringify(sortedComputerResult).includes(JSON.stringify(e[0])) &&
+        JSON.stringify(sortedComputerResult).includes(JSON.stringify(e[1])) &&
+        JSON.stringify(sortedComputerResult).includes(JSON.stringify(e[2]))
+        ){
+            alert('Computer win!')
+            reset()
+        }
+    })
+}
 
-        cube1.getAttribute('dataset') == 'X' &&
-        cube4.getAttribute('dataset') == 'X' &&
-        cube7.getAttribute('dataset') == 'X' ||
-        cube2.getAttribute('dataset') == 'X' &&
-        cube5.getAttribute('dataset') == 'X' &&
-        cube8.getAttribute('dataset') == 'X' ||
-        cube3.getAttribute('dataset') == 'X' &&
-        cube6.getAttribute('dataset') == 'X' &&
-        cube9.getAttribute('dataset') == 'X' ||
-
-        cube1.getAttribute('dataset') == 'X' &&
-        cube5.getAttribute('dataset') == 'X' &&
-        cube9.getAttribute('dataset') == 'X' ||
-
-        cube3.getAttribute('dataset') == 'X' &&
-        cube5.getAttribute('dataset') == 'X' &&
-        cube7.getAttribute('dataset') == 'X'
-    ){
-        alert('Computer is winner')
-        cube.forEach(e => {
-            e.innerHTML = '';
-            e.setAttribute('dataset', '')
-        })
-    }
+/* RESET GAME */
+function reset(){
+    cube.forEach(e => {
+        e.setAttribute('dataset', '')
+        e.innerHTML = '';
+        playerResult = [];
+        computerResult = [];
+    })
 }
