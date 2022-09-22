@@ -54,7 +54,7 @@ h1{
 
 /* FOOTER */
 footer{
-    position: absolute;
+    position: fixed;
     bottom: 0;
     color: white;
     font-weight: 600;
